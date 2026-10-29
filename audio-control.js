@@ -1,6 +1,6 @@
 // Keep the game silent until the player explicitly enables its audio.
 (() => {
-  let muted = true;
+  let muted = false;
   const contexts = new Map();
   for (const name of ['AudioContext', 'webkitAudioContext']) {
     const Original = window[name];
@@ -11,7 +11,7 @@
         const resume = super.resume.bind(this);
         contexts.set(this, resume);
         this.resume = () => muted ? Promise.resolve() : resume();
-        if (this.state === 'running') this.suspend().catch(() => {});
+        if (muted && this.state === 'running') this.suspend().catch(() => {});
       }
     };
   }
